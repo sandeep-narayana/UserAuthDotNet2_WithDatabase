@@ -25,7 +25,7 @@ namespace UserAuthDotBet2_WithDatabase
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<string>> Register([FromBody] UserCredentials userCredentials)
+        public async Task<ActionResult<string>> Register([FromBody] User user)
         {
 
             try
@@ -34,12 +34,12 @@ namespace UserAuthDotBet2_WithDatabase
                 // Perform registration logic, such as creating a new user in your database with hashed password.
 
                 // For this example, let's assume you have a method in your _auth repository to handle registration.
-                var registrationResult = await _auth.RegisterUser(userCredentials);
+                var registrationResult = await _auth.RegisterUser(user);
 
                 if (registrationResult)
                 {
                     // Registration successful, generate and return a JWT token.
-                    var token = GenerateToken(userCredentials.Username);
+                    var token = GenerateToken(user.Email);
                     return Ok(token);
                 }
                 else
@@ -70,7 +70,7 @@ namespace UserAuthDotBet2_WithDatabase
                 }
 
                 // Authentication successful, generate and return a JWT token.
-                var token = GenerateToken(userCredentials.Username);
+                var token = GenerateToken(userCredentials.Email);
                 return Ok(token);
             }
             catch (Exception ex)
@@ -117,9 +117,16 @@ namespace UserAuthDotBet2_WithDatabase
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public class User
+        {
+            public string Email { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
         public class UserCredentials
         {
-            public string Username { get; set; }
+            public string Email { get; set; }
             public string Password { get; set; }
         }
 
