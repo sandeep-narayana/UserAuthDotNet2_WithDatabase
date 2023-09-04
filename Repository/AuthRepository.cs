@@ -6,7 +6,7 @@ namespace UserAuthDotBet2_WithDatabase.Repositories;
 
 public interface IAuthRepository
 {
-    Task<bool> CheckAuthentication(string Username, string Password);
+    Task<bool> CheckAuthentication(UserCredentials userCredentials);
     Task<bool> RegisterUser(UserCredentials userCredentials);
 }
 
@@ -16,12 +16,19 @@ public class AuthRepository : BaseRepository, IAuthRepository
     {
     }
 
-    public async Task<bool> CheckAuthentication(string Username, string Password)
+    public async Task<bool> CheckAuthentication(UserCredentials userCredentials)
     {
-        var query = "SELECT * FROM users WHERE username = @Username AND password = @Password";
+        var query = "SELECT * FROM users WHERE email = @Username AND password = @Password";
+
+        var parameters = new
+        {
+            Username = userCredentials.Username,
+            Password = userCredentials.Password
+        };
+
 
         using var con = NewConnection;
-        return await con.QueryFirstOrDefaultAsync(query, new { Username, Password }) != null;
+        return await con.QueryFirstOrDefaultAsync(query, parameters) != null;
     }
 
     public async Task<bool> RegisterUser(UserCredentials userCredentials)

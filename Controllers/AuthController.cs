@@ -46,14 +46,14 @@ namespace UserAuthDotBet2_WithDatabase
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] string username, string password)
+        public async Task<ActionResult<string>> Login([FromBody] UserCredentials userCredentials)
         {
-            var didAuthorize = await _auth.CheckAuthentication(username, password);
+            var didAuthorize = await _auth.CheckAuthentication(userCredentials);
 
             if (!didAuthorize)
                 return StatusCode(401, "You are not authorized");
 
-            var token = GenerateToken(username);
+            var token = GenerateToken(userCredentials.Username);
 
             return Ok(token);
         }
