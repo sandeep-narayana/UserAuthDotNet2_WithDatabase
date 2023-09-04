@@ -27,43 +27,73 @@ namespace UserAuthDotBet2_WithDatabase
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] UserCredentials userCredentials)
         {
-            // Validate the registration request, check if the username or email is already taken, etc.
-            // Perform registration logic, such as creating a new user in your database with hashed password.
 
-            // For this example, let's assume you have a method in your _auth repository to handle registration.
-            var registrationResult = await _auth.RegisterUser(userCredentials);
+            try
+            {
+                // Validate the registration request, check if the username or email is already taken, etc.
+                // Perform registration logic, such as creating a new user in your database with hashed password.
 
-            if (registrationResult)
-            {
-                // Registration successful, generate and return a JWT token.
-                var token = GenerateToken(userCredentials.Username);
-                return Ok(token);
+                // For this example, let's assume you have a method in your _auth repository to handle registration.
+                var registrationResult = await _auth.RegisterUser(userCredentials);
+
+                if (registrationResult)
+                {
+                    // Registration successful, generate and return a JWT token.
+                    var token = GenerateToken(userCredentials.Username);
+                    return Ok(token);
+                }
+                else
+                {
+                    // Registration failed, return an appropriate response.
+                    return BadRequest("Registration failed");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Registration failed, return an appropriate response.
-                return BadRequest("Registration failed");
+                _logger.LogError(ex, "An error occurred during registration.");
+                return StatusCode(500, "Internal Server Error");
             }
+
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] UserCredentials userCredentials)
         {
-            var didAuthorize = await _auth.CheckAuthentication(userCredentials);
+            try
+            {
+                var didAuthorize = await _auth.CheckAuthentication(userCredentials);
 
-            if (!didAuthorize)
-                return StatusCode(401, "You are not authorized");
+                if (!didAuthorize)
+                {
+                    // Unauthorized, return a 401 response.
+                    return Unauthorized("Authentication failed");
+                }
 
-            var token = GenerateToken(userCredentials.Username);
-
-            return Ok(token);
+                // Authentication successful, generate and return a JWT token.
+                var token = GenerateToken(userCredentials.Username);
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred during login.");
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
         [HttpPost("Welcome")]
         [Authorize]
         public async Task<ActionResult<string>> Welcome()
         {
-            return Ok("Welcome, you are an authenticated user");
+            try
+            {
+                // Authorized user, return a welcome message.
+                return Ok("Welcome, you are an authenticated user");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the welcome request.");
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
         private string GenerateToken(string name)
