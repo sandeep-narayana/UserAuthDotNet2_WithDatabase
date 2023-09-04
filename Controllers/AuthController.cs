@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using UserAuthDotBet2_WithDatabase.Repositories;
@@ -56,6 +57,13 @@ namespace UserAuthDotBet2_WithDatabase
             var token = GenerateToken(userCredentials.Username);
 
             return Ok(token);
+        }
+
+        [HttpPost("Welcome")]
+        [Authorize]
+        public async Task<ActionResult<string>> Welcome()
+        {
+            return Ok("Welcome, you are an authenticated user");
         }
 
         private string GenerateToken(string name)
