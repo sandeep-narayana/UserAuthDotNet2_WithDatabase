@@ -44,14 +44,15 @@ public class AuthRepository : BaseRepository, IAuthRepository
     public async Task<bool> RegisterUser(User user)
     {
         // SQL query to insert a new user into the database.
-        var query = "INSERT INTO users (username ,email, password) VALUES (@Username,@Email, @Password)";
+        var query = "INSERT INTO users (first_name,last_name ,email, password) VALUES (@FirstName,@LastName,@Email, @Password)";
 
         // Hash the password before storing it in the database.
         var hashedPassword = HashPassword(user.Password);
 
         var parameters = new
         {
-            Username = user.Username,
+            FirstName = user.FirstName,
+            LastName = user.SecondName,
             Email = user.Email,
             Password = hashedPassword
         };
