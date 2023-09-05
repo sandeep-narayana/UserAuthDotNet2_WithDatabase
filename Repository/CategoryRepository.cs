@@ -5,6 +5,7 @@ namespace UserAuthDotBet2_WithDatabase.Repositories;
 public interface ICategoryRepository
 {
     public Task<List<Category>> get();
+    public Task<String> AddCategory(CategoryDTO category);
 }
 
 public class CategoryRepository : BaseRepository, ICategoryRepository
@@ -22,4 +23,21 @@ public class CategoryRepository : BaseRepository, ICategoryRepository
         return res.AsList();
 
     }
+
+    async public Task<String> AddCategory(CategoryDTO category)
+{
+    var query = "INSERT INTO categories (name, description, image) VALUES (@Name, @Description, @Image)";
+    using var con = NewConnection;
+
+    var affectedRows = await con.ExecuteAsync(query, category);
+
+    if (affectedRows > 0)
+    {
+        return "Category Added Successfully";
+    }
+    else
+    {
+        throw new Exception("Failed to insert category into the database.");
+    }
+}
 }
