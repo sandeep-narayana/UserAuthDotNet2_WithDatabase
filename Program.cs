@@ -61,6 +61,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Add CORS configuration to allow requests from your Vue.js application.
+app.UseCors(builder =>
+{
+    builder
+        .WithOrigins("http://localhost:8080")// Replace with your Vue.js app's domain and port
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
+
+
 // step 1 Enable authentication by adding 
 app.UseAuthentication();
 
