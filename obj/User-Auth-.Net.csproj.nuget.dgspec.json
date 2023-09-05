@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/nspiraappcbd/Documents/GitHub/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj": {}
+    "/Users/nspiraappcbd/Documents/GitHub/Vue_Auth_.Net/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj": {}
   },
   "projects": {
-    "/Users/nspiraappcbd/Documents/GitHub/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj": {
+    "/Users/nspiraappcbd/Documents/GitHub/Vue_Auth_.Net/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/nspiraappcbd/Documents/GitHub/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj",
+        "projectUniqueName": "/Users/nspiraappcbd/Documents/GitHub/Vue_Auth_.Net/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj",
         "projectName": "User-Auth-.Net",
-        "projectPath": "/Users/nspiraappcbd/Documents/GitHub/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj",
+        "projectPath": "/Users/nspiraappcbd/Documents/GitHub/Vue_Auth_.Net/UserAuthDotNet2_WithDatabase/User-Auth-.Net.csproj",
         "packagesPath": "/Users/nspiraappcbd/.nuget/packages/",
-        "outputPath": "/Users/nspiraappcbd/Documents/GitHub/UserAuthDotNet2_WithDatabase/obj/",
+        "outputPath": "/Users/nspiraappcbd/Documents/GitHub/Vue_Auth_.Net/UserAuthDotNet2_WithDatabase/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/nspiraappcbd/.nuget/NuGet/NuGet.Config"
