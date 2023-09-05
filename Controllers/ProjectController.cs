@@ -72,6 +72,23 @@ namespace UserAuthDotBet2_WithDatabase
             return Ok(cart);
         }
 
+        [HttpPost("cart/add/{userId}")]
+        public async Task<ActionResult<string>> AddProductToCart([FromBody] Product product, int userId)
+        {
+            try
+            {
+                var result = await _cart.AddToCart(product, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging purposes
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "An error occurred while adding the product to the cart.");
+            }
+        }
+
+
     }
 
     public class Category
