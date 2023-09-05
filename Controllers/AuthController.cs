@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using UserAuthDotBet2_WithDatabase.Repositories;
+using System.Text.Json.Serialization;
 
 namespace UserAuthDotBet2_WithDatabase
 {
@@ -119,9 +120,13 @@ namespace UserAuthDotBet2_WithDatabase
 
         public class User
         {
-            public string Email { get; set; }
-            public string Username { get; set; }
-            public string Password { get; set; }
+            public string? Email { get; set; }
+
+            [JsonPropertyName("first_name")] // Specify the JSON property name
+            public string? FirstName { get; set; }
+            [JsonPropertyName("second_name")] // Specify the JSON property name
+            public string? SecondName { get; set; }
+            public string? Password { get; set; }
         }
 
         public class UserCredentials
