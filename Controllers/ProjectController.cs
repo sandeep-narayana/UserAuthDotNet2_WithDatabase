@@ -11,11 +11,13 @@ namespace UserAuthDotBet2_WithDatabase
     {
         private readonly ILogger<ProjectController> _logger;
         private ICategoryRepository _cat;
+        private IProductRepository _product;
 
-        public ProjectController(ILogger<ProjectController> logger, ICategoryRepository cat)
+        public ProjectController(ILogger<ProjectController> logger, ICategoryRepository cat, IProductRepository product)
         {
             _logger = logger;
             _cat = cat;
+            _product = product;
         }
 
 
@@ -47,6 +49,13 @@ namespace UserAuthDotBet2_WithDatabase
             }
 
         }
+
+        [HttpGet("products")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        {
+            var products = await _product.get();
+            return Ok(products);
+        }
     }
 
     public class Category
@@ -62,6 +71,16 @@ namespace UserAuthDotBet2_WithDatabase
         public string Name { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+        public decimal Price { get; set; }
+        public int CategoryId { get; set; } // Assuming you have a category ID for the product
     }
 
 }
