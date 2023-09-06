@@ -116,6 +116,15 @@ namespace UserAuthDotBet2_WithDatabase
         public int CategoryId { get; set; } // Assuming you have a category ID for the product
     }
 
+     public class ProductDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+        public decimal Price { get; set; }
+        public int CategoryId { get; set; } // Assuming you have a category ID for the product
+    }
+
 
     public class Cart
     {
