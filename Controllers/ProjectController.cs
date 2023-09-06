@@ -33,16 +33,6 @@ namespace UserAuthDotBet2_WithDatabase
         [Authorize]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            // Test Only
-            // Retrieve the user's claims
-            var userClaims = HttpContext.User.Claims;
-
-            // Print user claims to the console
-            foreach (var claim in userClaims)
-            {
-                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-                // Console.WriteLine(userClaims);
-            }
 
             var categories = await _cat.get();
             return Ok(categories);
@@ -106,16 +96,28 @@ namespace UserAuthDotBet2_WithDatabase
         }
 
         [HttpGet("user")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        [Authorize]
+        public async Task<ActionResult<User>> GetUser()
         {
-            var userClaims = HttpContext.User.Claims;
-            //Find the claim with the user's ID:
-            var userIdClaim = userClaims.FirstOrDefault(claim => claim.Type == "Id");
-            //Extract the user's ID as an integer:
-            int userId = userIdClaim != null ? int.Parse(userIdClaim.Value) : -1; // You can choose a default value if the claim is not found
 
+            var userClaims = HttpContext.User.Claims;
+
+            // Find the claim with the user's ID:
+            var userIdClaim = userClaims.FirstOrDefault(claim => claim.Type == "Id");
+
+            // Extract the user's ID as an integer:
+            int userId = userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId) ? parsedUserId : -1; // Default value if the claim is not found or parsing fails
+
+            //Throw an exception if the user ID is -1
+            if (userId == -1)
+            {
+                throw new Exception("User ID not found or invalid.");
+            }
+
+            // Use the user ID to fetch the user data
             var user = await _user.getUser(userId);
 
+            // Return the user data
             return Ok(user);
         }
 
