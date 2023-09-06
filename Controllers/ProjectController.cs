@@ -68,8 +68,22 @@ namespace UserAuthDotBet2_WithDatabase
         }
 
         [HttpGet("cart")]
-        public async Task<ActionResult<IEnumerable<Cart>>> GetUserCart(int userId)
+        public async Task<ActionResult<IEnumerable<Cart>>> GetUserCart()
         {
+
+            var userClaims = HttpContext.User.Claims;
+            // Find the claim with the user's ID:
+            var userIdClaim = userClaims.FirstOrDefault(claim => claim.Type == "Id");
+
+            // Extract the user's ID as an integer:
+            int userId = userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId) ? parsedUserId : -1; // Default value if the claim is not found or parsing fails
+
+            //Throw an exception if the user ID is -1
+            if (userId == -1)
+            {
+                throw new Exception("User ID not found or invalid.");
+            }
+
             var cart = await _cart.getCartById(userId);
 
             if (cart == null || !cart.Any())
