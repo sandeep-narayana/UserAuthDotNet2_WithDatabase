@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAuthDotBet2_WithDatabase.Repositories;
+using static UserAuthDotBet2_WithDatabase.AuthController;
 
 namespace UserAuthDotBet2_WithDatabase
 {
@@ -16,12 +17,15 @@ namespace UserAuthDotBet2_WithDatabase
         private IProductRepository _product;
         private ICartRepository _cart;
 
-        public ProjectController(ILogger<ProjectController> logger, ICategoryRepository cat, IProductRepository product, ICartRepository cart)
+        private IUserRepository _user;
+
+        public ProjectController(ILogger<ProjectController> logger, ICategoryRepository cat, IProductRepository product, ICartRepository cart, IUserRepository user)
         {
             _logger = logger;
             _cat = cat;
             _product = product;
             _cart = cart;
+            _user = user;
         }
 
 
@@ -99,6 +103,20 @@ namespace UserAuthDotBet2_WithDatabase
                 Console.WriteLine(ex.Message);
                 return StatusCode(500, "An error occurred while adding the product to the cart.");
             }
+        }
+
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        {
+            var userClaims = HttpContext.User.Claims;
+            //Find the claim with the user's ID:
+            var userIdClaim = userClaims.FirstOrDefault(claim => claim.Type == "Id");
+            //Extract the user's ID as an integer:
+            int userId = userIdClaim != null ? int.Parse(userIdClaim.Value) : -1; // You can choose a default value if the claim is not found
+
+            var user = await _user.getUser(userId);
+
+            return Ok(user);
         }
 
 

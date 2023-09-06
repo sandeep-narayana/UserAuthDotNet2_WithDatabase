@@ -137,13 +137,13 @@ namespace UserAuthDotBet2_WithDatabase
         {
             [JsonPropertyName("userid")]
             public int userid { get; set; }
-            public string? Email { get; set; }
+            public string Email { get; set; }
 
             [JsonPropertyName("first_name")] // Specify the JSON property name
-            public string? FirstName { get; set; }
+            public string FirstName { get; set; }
             [JsonPropertyName("second_name")] // Specify the JSON property name
-            public string? LastName { get; set; }
-            public string? Password { get; set; }
+            public string LastName { get; set; }
+            public string Password { get; set; }
         }
 
         public class UserCredentials
