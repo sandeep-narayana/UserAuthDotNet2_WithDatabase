@@ -18,11 +18,14 @@ namespace UserAuthDotBet2_WithDatabase
         private IConfiguration _config;
         private IAuthRepository _auth;
 
-        public AuthController(ILogger<AuthController> logger, IConfiguration config, IAuthRepository auth)
+        private IUserRepository _user;
+
+        public AuthController(ILogger<AuthController> logger, IConfiguration config, IAuthRepository auth, IUserRepository user)
         {
             _logger = logger;
             _config = config;
             _auth = auth;
+            _user = user;
         }
 
         [HttpPost("register")]
@@ -40,8 +43,8 @@ namespace UserAuthDotBet2_WithDatabase
                 if (registrationResult)
                 {
                     // Registration successful, generate and return a JWT token.
-                    var token = GenerateToken(user.Email);
-                    return Ok(token);
+                    // var token = GenerateToken(user.Email);
+                    return Ok();
                 }
                 else
                 {
@@ -62,6 +65,16 @@ namespace UserAuthDotBet2_WithDatabase
         {
             try
             {
+
+                var user = await _user.getUserByEmail(userCredentials.Email);
+
+                if (user == null)
+                {
+                    // User not found, return a 404 response.
+                    return NotFound("User not found");
+                }
+
+
                 var didAuthorize = await _auth.CheckAuthentication(userCredentials);
 
                 if (!didAuthorize)
@@ -71,7 +84,7 @@ namespace UserAuthDotBet2_WithDatabase
                 }
 
                 // Authentication successful, generate and return a JWT token.
-                var token = GenerateToken(userCredentials.Email);
+                var token = GenerateToken(userCredentials.Email, user.userid);
                 return Ok(token);
             }
             catch (Exception ex)
@@ -97,16 +110,18 @@ namespace UserAuthDotBet2_WithDatabase
             }
         }
 
-        private string GenerateToken(string name)
+        private string GenerateToken(string name, int id)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             const string Name = nameof(Name);
+            const string Id = nameof(Id);
 
-            var claims = new[]
-            {
+            var claims = new List<Claim>
+        {
             new Claim(Name, name),
+            new Claim(Id, id.ToString()),
         };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
@@ -120,12 +135,14 @@ namespace UserAuthDotBet2_WithDatabase
 
         public class User
         {
+            [JsonPropertyName("userid")]
+            public int userid { get; set; }
             public string? Email { get; set; }
 
             [JsonPropertyName("first_name")] // Specify the JSON property name
             public string? FirstName { get; set; }
             [JsonPropertyName("second_name")] // Specify the JSON property name
-            public string? SecondName { get; set; }
+            public string? LastName { get; set; }
             public string? Password { get; set; }
         }
 

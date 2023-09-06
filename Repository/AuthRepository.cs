@@ -52,7 +52,7 @@ public class AuthRepository : BaseRepository, IAuthRepository
         var parameters = new
         {
             FirstName = user.FirstName,
-            LastName = user.SecondName,
+            LastName = user.LastName,
             Email = user.Email,
             Password = hashedPassword
         };

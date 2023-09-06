@@ -1,5 +1,6 @@
 
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAuthDotBet2_WithDatabase.Repositories;
 
@@ -25,8 +26,20 @@ namespace UserAuthDotBet2_WithDatabase
 
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
+            // Test Only
+            // Retrieve the user's claims
+            var userClaims = HttpContext.User.Claims;
+
+            // Print user claims to the console
+            foreach (var claim in userClaims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                // Console.WriteLine(userClaims);
+            }
+
             var categories = await _cat.get();
             return Ok(categories);
         }
@@ -116,7 +129,7 @@ namespace UserAuthDotBet2_WithDatabase
         public int CategoryId { get; set; } // Assuming you have a category ID for the product
     }
 
-     public class ProductDto
+    public class ProductDto
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -137,6 +150,5 @@ namespace UserAuthDotBet2_WithDatabase
         [JsonPropertyName("user_id")]
         public int UserId { get; set; } // Added userId property
     }
-
 
 }
