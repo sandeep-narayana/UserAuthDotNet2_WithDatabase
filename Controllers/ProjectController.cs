@@ -93,11 +93,34 @@ namespace UserAuthDotBet2_WithDatabase
             return Ok(cart);
         }
 
-        [HttpPost("cart/add/{userId}")]
-        public async Task<ActionResult<string>> AddProductToCart([FromBody] Product product, int userId)
+        [HttpPost("cart/add")]
+        [Authorize]
+        public async Task<ActionResult<string>> AddProductToCart([FromQuery] int productId)
         {
             try
             {
+
+                var userClaims = HttpContext.User.Claims;
+                // Find the claim with the user's ID:
+                var userIdClaim = userClaims.FirstOrDefault(claim => claim.Type == "Id");
+                // Extract the user's ID as an integer:
+                int userId = userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId) ? parsedUserId : -1; // Default value if the claim is not found or parsing fails
+
+                //Throw an exception if the user ID is -1
+                if (userId == -1)
+                {
+                    throw new Exception("User ID not found or invalid.");
+                }
+
+                // find product with id
+                var product = await _product.getProductById(productId);
+
+                if (product == null)
+                {
+                    throw new Exception("Product not found.");
+                }
+
+
                 var result = await _cart.AddToCart(product, userId);
                 return Ok(result);
             }
@@ -160,6 +183,7 @@ namespace UserAuthDotBet2_WithDatabase
         public string Description { get; set; }
         public string Image { get; set; }
         public decimal Price { get; set; }
+        [JsonPropertyName("category_id")]
         public int CategoryId { get; set; } // Assuming you have a category ID for the product
     }
 

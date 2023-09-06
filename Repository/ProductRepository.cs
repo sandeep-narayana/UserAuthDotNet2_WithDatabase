@@ -5,6 +5,7 @@ namespace UserAuthDotBet2_WithDatabase.Repositories;
 public interface IProductRepository
 {
     public Task<List<Product>> get();
+    public Task<Product> getProductById(int productId);
 }
 
 public class ProductRepository : BaseRepository, IProductRepository
@@ -23,4 +24,14 @@ public class ProductRepository : BaseRepository, IProductRepository
 
     }
 
+    async public  Task<Product> getProductById(int productId)
+    {
+        var query = "SELECT * FROM products WHERE id = @Id";
+        var con = NewConnection;
+        var res = await con.QuerySingleOrDefaultAsync<Product>(query, new
+        {
+            Id = productId
+        });
+        return res;
+    }
 }
